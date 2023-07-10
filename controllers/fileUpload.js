@@ -1,5 +1,6 @@
 const File = require("../models/File");
 const cloudinary = require('cloudinary').v2;
+const submitFile=require("../models/SubmitMoel")
 
 
 //localfileupload -> handler function
@@ -101,3 +102,42 @@ exports.allimages = async (req, res) => {
         res.status(500).json({ error: "Error deleting file" });
       }
     };
+
+
+    exports.submitform=async(req,res)=>{
+      try {
+        const { name, email } = req.body;
+    
+        // Create a new file document
+        const newFile = new submitFile({
+          name,
+          email,
+        });
+        await submitFile.create({
+          name,
+          email,
+      })
+  
+      // Return the Cloudinary URL of the uploaded image
+      res.json({ name: name, email: email});
+
+
+    }
+    catch (error) {
+      console.error("Error submiting file:", error);
+      res.status(500).json({ error: "Error submiting file" });
+
+    }
+  };
+
+
+  
+exports.allsubmitfoam = async (req, res) => {
+  try {
+      const data = await submitFile.find({}); // Assuming 'url' is the field containing the image URLs
+      res.json(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ error: 'Error fetching data' });
+    }
+  };
