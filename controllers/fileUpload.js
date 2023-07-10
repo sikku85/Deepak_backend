@@ -1,7 +1,6 @@
 const File = require("../models/File");
 const cloudinary = require('cloudinary').v2;
 const submitFile=require("../models/SubmitMoel")
-const sharp = require('sharp');
 
 
 
@@ -53,14 +52,9 @@ exports.cloudfileupload = async (req, res) => {
         const uploadOptions = {
           folder: "sikkuclouds", // Replace with your desired folder name
         };
-        const optimizedImage = await sharp(file.tempFilePath)
-        .jpeg({quality:80})
-        .png({quality:80}) // Set the desired width of the imagz
-         // Set the desired JPEG compression quality
-        .toBuffer();
     
         // Upload the file to Cloudinary
-        const result = await cloudinary.uploader.upload(optimizedImage, {... uploadOptions,resource_type:'auto',});
+        const result = await cloudinary.uploader.upload(file.tempFilePath, uploadOptions);
         await File.create({
             name,
             imageUrl: result.secure_url,
